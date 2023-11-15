@@ -12,5 +12,4 @@ while True:
             pygame.quit()
             sys.exit()
     DISPLAYSURF.fill((255, 255, 255))
-    pygame.draw.rect(surface2rect, (255, 0, 0), (20, 20, 50, 20))
     pygame.display.update()
