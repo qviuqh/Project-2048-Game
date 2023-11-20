@@ -1,5 +1,22 @@
 import numpy as np
-from Board_game import random_tile
+
+def valid_move(board, direction):
+    test_valid = np.copy(board)
+    test_valid = move(test_valid, direction)
+    Checking = test_valid == board
+    if np.any(Checking == False):
+        return True
+    else:
+        return False
+
+def Game_over(board):
+    directions = ["up", "down", "left", "right"]
+    
+    for d in directions:
+        if np.any(board == 0) or valid_move(board, d):
+            return False
+    
+    return True
 
 def merge_tiles(row):
     new_row = np.zeros(4, dtype = int)
@@ -36,5 +53,4 @@ def move(board, direction):
     elif direction == "right":
         board = move_right(board)
     
-    random_tile(board)
     return board
