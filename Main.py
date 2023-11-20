@@ -2,7 +2,6 @@ from pynput.keyboard import Listener
 import Move
 import Board_game
 
-
 #Create new board game
 Board = Board_game.new_board()
 print(Board)
