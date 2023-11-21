@@ -3,8 +3,8 @@ from pygame.locals import *
 
 pygame.init()
 
-DISPLAYSURF = pygame.display.set_mode((400, 300))
-pygame.display.set_caption('Testing Game')
+DISPLAYSURF = pygame.display.set_mode((450, 300))
+pygame.display.set_caption('2048 Game')
 
 while True:
     for event in pygame.event.get():
