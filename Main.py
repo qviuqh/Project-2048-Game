@@ -40,7 +40,3 @@ def keyReleased(key):
 
 with Listener(on_press = keypress, on_release = keyReleased) as listener:
     listener.join()
-
-#if Move.Game_over(Board):
-#    print("Game Over")
-#    raise SystemExit(0)
