@@ -1,4 +1,5 @@
 import numpy as np
+import Score
 
 def valid_move(board, direction):
     test_valid = np.copy(board)
@@ -10,15 +11,20 @@ def valid_move(board, direction):
         return False
 
 def Game_over(board):
+    global Score
     directions = ["up", "down", "left", "right"]
     
     for d in directions:
         if np.any(board == 0) or valid_move(board, d):
             return False
     
+    if Score.new_score > Score.high_score:
+        Score.update_high_score(Score.new_score)
+        print("New High Score:", Score.new_score)
     return True
 
 def merge_tiles(row):
+    global Score
     new_row = np.zeros(4, dtype = int)
     index = 0
     for value in row:
@@ -26,6 +32,7 @@ def merge_tiles(row):
             if new_row[index] == 0:
                 new_row[index] = value
             elif new_row[index] == value:
+                Score.new_score += new_row[index]
                 new_row[index] *= 2
                 index += 1
             else:
