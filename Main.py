@@ -14,7 +14,7 @@ def keypress(key):
     global Board
     
     if str(key) not in ["Key.esc", "Key.right", "Key.left", "Key.up", "Key.down"]:
-        if str(key) == "Key.enter":
+        if str(key) == "Key.tab":
             redu_value = R.redu()
             Board = redu_value[0]
             Score.new_score = redu_value[1]
