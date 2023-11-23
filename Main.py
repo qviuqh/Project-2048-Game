@@ -7,8 +7,8 @@ import Redu as R
 #Create new board game
 Board = Board_game.new_board()
 R.add_storage(Board, Score.new_score)
-print(Board)
-print()
+# print(Board)
+# print()
 
 def keypress(key):
     global Board
@@ -37,12 +37,11 @@ def keypress(key):
             Board_game.random_tile(Board)
             R.add_storage(Board, Score.new_score)
         
-    print("High Score:", Score.high_score)
-    print("Score:", Score.new_score)
-    print(len(R.Storage_board), len(R.Storage_score))
-    print('-----------------------')
-    print(Board)
-    print()
+    # print("High Score:", Score.high_score)
+    # print("Score:", Score.new_score)
+    # print('-----------------------')
+    # print(Board)
+    # print()
 
 def keyReleased(key):
     if Move.Game_over(Board):
