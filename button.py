@@ -1,10 +1,10 @@
 import pygame
 
 class Button():
-    def __init__(self, image_01, image_02, pos):
+    def __init__(self, image_01, image_02, pos, scale = 1):
         self.pos = pos
-        self.image_01 = pygame.transform.rotozoom(image_01, 0, 0.6)
-        self.image_02 = pygame.transform.rotozoom(image_02, 0, 0.6)
+        self.image_01 = pygame.transform.rotozoom(image_01, 0, scale)
+        self.image_02 = pygame.transform.rotozoom(image_02, 0, scale)
         self.temp = self.image_01
         self.rect_01 = self.image_01.get_rect()
         self.rect_01.center = (pos)

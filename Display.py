@@ -92,11 +92,11 @@ def main_game():
     # Create button
     redu_button_01 = pygame.image.load('image/button/return00-01.png').convert_alpha()
     redu_button_02 = pygame.image.load('image/button/return01-01.png').convert_alpha()
-    redu_button = Button(redu_button_01, redu_button_02, (385, 30))
+    redu_button = Button(redu_button_01, redu_button_02, (385, 30), 0.6) 
     
     setting_button_01 = pygame.image.load('image/button/setting00-01.png').convert_alpha()
     setting_button_02 = pygame.image.load('image/button/setting01-01.png').convert_alpha()
-    setting_button = Button(setting_button_01, setting_button_02, (420, 30))
+    setting_button = Button(setting_button_01, setting_button_02, (420, 30), 0.6)
     
     while True:
         for event in pygame.event.get():
@@ -107,14 +107,19 @@ def main_game():
                 pygame.quit()
                 sys.exit()
             
-            if event.type == MOUSEBUTTONDOWN and redu_button.checkForInput(event.pos):
-                redu_button.on_pess()
-                if len(R.Storage_board) > 1:
-                    redu = R.redu()
-                    Board = redu[0]
-                    Score.new_score = redu[1]
+            if event.type == MOUSEBUTTONDOWN:
+                if redu_button.checkForInput(event.pos):
+                    redu_button.on_pess()
+                    if len(R.Storage_board) > 1:
+                        redu = R.redu()
+                        Board = redu[0]
+                        Score.new_score = redu[1]
+                elif setting_button.checkForInput(event.pos):
+                    setting_button.on_pess()
+                    setting()
             else:
                 redu_button.normal()
+                setting_button.normal()
             
             if event.type == QUIT:
                 pygame.quit()
@@ -140,6 +145,44 @@ def main_game():
         draw_board(Board)
         score_box(Score.new_score)
         best_score_box(Score.high_score)
+        pygame.display.update()
+
+def setting():
+    # Button
+    resume_button_01 = pygame.image.load('image/button/resume00-01.png').convert_alpha()
+    resume_button_02 = pygame.image.load('image/button/resume01-01.png').convert_alpha()
+    resume_button = Button(resume_button_01, resume_button_02, (225, 70), 0.8)
+    
+    restart_button_01 = pygame.image.load('image/button/restart00-01.png').convert_alpha()
+    restart_button_02 = pygame.image.load('image/button/restart01-01.png').convert_alpha()
+    restart_button = Button(restart_button_01, restart_button_02, (225, 135), 0.8)
+    
+    quit_button_01 = pygame.image.load('image/button/QUIT00-01.png').convert_alpha()
+    quit_button_02 = pygame.image.load('image/button/QUIT01-01.png').convert_alpha()
+    quit_button = Button(quit_button_01, quit_button_02, (225, 200), 0.8)
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == MOUSEBUTTONDOWN:
+                if restart_button.checkForInput(event.pos):
+                    restart_button.on_pess()
+                    main_game()
+                elif quit_button.checkForInput(event.pos):
+                    quit_button.on_pess()
+                    pygame.quit()
+                    sys.exit()
+            else:
+                restart_button.normal()
+                quit_button.normal()
+        
+        DISPLAYSURF.fill(color['background'])
+        DISPLAYSURF.blit(resume_button.get_image(), resume_button.get_pos())
+        DISPLAYSURF.blit(restart_button.get_image(), restart_button.get_pos())
+        DISPLAYSURF.blit(quit_button.get_image(), quit_button.get_pos())
         pygame.display.update()
 
 if __name__ == '__main__':
