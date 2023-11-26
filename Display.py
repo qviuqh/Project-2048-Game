@@ -1,20 +1,23 @@
+import math
 import pygame, sys
 from pygame.locals import *
 import Score
 import Move
 import Board_game
 import Redu as R
+from button import Button
 
 pygame.init()
 
 DISPLAYSURF = pygame.display.set_mode((450, 300))
 pygame.display.set_caption('2048 Game')
 
-# Font
-font = pygame.font.Font('font/Montserrat-Bold.ttf', 30)
-font_01 = pygame.font.Font('font/Montserrat-Bold.ttf', 10)
-font_score = pygame.font.Font('font/Montserrat-Bold.ttf', 28)
+clock = pygame.time.Clock()
 
+Logo = pygame.image.load('image/Logo.png')
+pygame.display.set_icon(Logo)
+
+# Color
 color =    {0: (204, 192, 179),
             2: (238, 228, 218),
             4: (238, 224, 198),
@@ -30,8 +33,12 @@ color =    {0: (204, 192, 179),
             'other': (183, 132, 171),
             'board': (187, 173, 160),
             'box': (237, 233, 217),
-            'black': (0, 0 ,0),
+            'black': (0, 0, 0),
+            'white': (255, 255, 255),
             'background': (252, 250, 241)}
+
+def get_font(size):
+    return pygame.font.Font('font/Montserrat-Bold.ttf', size)
 
 def draw_board(board):
     pygame.draw.rect(DISPLAYSURF, color['board'], [0, 0, 300, 300])
@@ -44,36 +51,70 @@ def draw_board(board):
                 draw_tile(DISPLAYSURF, i, j, tile)
 
 def draw_tile(screen, row, col, value):
-    font_surface = font.render(str(value), True, color['black'])
+    if value in [2, 4]:
+        font_surface = get_font(30).render(str(value), True, color['black'])
+    else:
+        font_surface = get_font(30 - 2 * math.ceil(math.log10(value))).render(str(value), True, color['white'])
+    
     font_rect = font_surface.get_rect(center = (col * 72 + 10 + 64 / 2, row * 72 + 10 + 64 / 2))
-    pygame.draw.rect(screen, color[value], (col * 72 + 10, row * 72 + 10, 64, 64), 0, 5)
+    
+    if value <= 2048:
+        pygame.draw.rect(screen, color[value], (col * 72 + 10, row * 72 + 10, 64, 64), 0, 5)
+    else:
+        pygame.draw.rect(screen, color['other'], (col * 72 + 10, row * 72 + 10, 64, 64), 0, 5)
+    
     screen.blit(font_surface, font_rect)
 
 def score_box(score):
-    score_surface = font_score.render(str(score), True, color[16])
+    score_surface = get_font(28).render(str(score), True, color[16])
     score_rect = score_surface.get_rect(center = (375, 118))
-    font_surface = font_01.render('SCORE', True, color['black'])
+    font_surface = get_font(10).render('SCORE', True, color['black'])
     font_rect = font_surface.get_rect(center = (333, 93))
     pygame.draw.rect(DISPLAYSURF, color['box'], (310, 82, 130, 60), 0, 5)
     DISPLAYSURF.blit(font_surface, font_rect)
     DISPLAYSURF.blit(score_surface, score_rect)
 
 def best_score_box(best_score):
-    best_surface = font_score.render(str(best_score), True, color[16])
+    best_surface = get_font(28).render(str(best_score), True, color[16])
     best_rect = best_surface.get_rect(center = (375, 188))
-    font_surface = font_01.render('YOUR BEST', True, color['black'])
+    font_surface = get_font(10).render('YOUR BEST', True, color['black'])
     font_rect = font_surface.get_rect(center = (345, 163))
     pygame.draw.rect(DISPLAYSURF, color['box'], (310, 152, 130, 60), 0, 5)
     DISPLAYSURF.blit(font_surface, font_rect)
     DISPLAYSURF.blit(best_surface, best_rect)
 
 def main_game():
+    clock.tick(30)
+    # Create new board game
     Board = Board_game.new_board()
     R.add_storage(Board, Score.new_score)
+    
+    # Create button
+    redu_button_01 = pygame.image.load('image/button/return00-01.png').convert_alpha()
+    redu_button_02 = pygame.image.load('image/button/return01-01.png').convert_alpha()
+    redu_button = Button(redu_button_01, redu_button_02, (385, 30))
+    
+    setting_button_01 = pygame.image.load('image/button/setting00-01.png').convert_alpha()
+    setting_button_02 = pygame.image.load('image/button/setting01-01.png').convert_alpha()
+    setting_button = Button(setting_button_01, setting_button_02, (420, 30))
     
     while True:
         for event in pygame.event.get():
             direction = ""
+            
+            if Move.Game_over(Board):
+                print('GameOver')
+                pygame.quit()
+                sys.exit()
+            
+            if event.type == MOUSEBUTTONDOWN and redu_button.checkForInput(event.pos):
+                redu_button.on_pess()
+                if len(R.Storage_board) > 1:
+                    redu = R.redu()
+                    Board = redu[0]
+                    Score.new_score = redu[1]
+            else:
+                redu_button.normal()
             
             if event.type == QUIT:
                 pygame.quit()
@@ -94,6 +135,8 @@ def main_game():
                 R.add_storage(Board, Score.new_score)
         
         DISPLAYSURF.fill(color['background'])
+        DISPLAYSURF.blit(redu_button.get_image(), redu_button.get_pos())
+        DISPLAYSURF.blit(setting_button.get_image(), setting_button.get_pos())
         draw_board(Board)
         score_box(Score.new_score)
         best_score_box(Score.high_score)
