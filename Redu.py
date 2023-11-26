@@ -28,3 +28,15 @@ def redu():
     score = Storage_score[len(Storage_score) - 1]
     
     return board, score
+
+def resume_game():
+    global Storage_board
+    global Storage_score
+    
+    board = Storage_board[len(Storage_board) - 1]
+    Storage_board.pop(len(Storage_board) - 1)
+    
+    score = Storage_score[len(Storage_score) - 1]
+    Storage_score.pop(len(Storage_score) - 1)
+    
+    return board, score

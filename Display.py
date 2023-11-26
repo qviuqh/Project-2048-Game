@@ -83,10 +83,9 @@ def best_score_box(best_score):
     DISPLAYSURF.blit(font_surface, font_rect)
     DISPLAYSURF.blit(best_surface, best_rect)
 
-def main_game():
-    clock.tick(30)
-    # Create new board game
-    Board = Board_game.new_board()
+def main_game(Board, score):
+    # Reset new game
+    Score.new_score = score
     R.add_storage(Board, Score.new_score)
     
     # Create button
@@ -103,9 +102,8 @@ def main_game():
             direction = ""
             
             if Move.Game_over(Board):
-                print('GameOver')
-                pygame.quit()
-                sys.exit()
+                pygame.time.wait(500)
+                game_over(Score.new_score)
             
             if event.type == MOUSEBUTTONDOWN:
                 if redu_button.checkForInput(event.pos):
@@ -116,6 +114,9 @@ def main_game():
                         Score.new_score = redu[1]
                 elif setting_button.checkForInput(event.pos):
                     setting_button.on_pess()
+                    DISPLAYSURF.blit(setting_button.get_image(), setting_button.get_pos())
+                    pygame.display.update()
+                    pygame.time.wait(200)
                     setting()
             else:
                 redu_button.normal()
@@ -170,13 +171,28 @@ def setting():
             if event.type == MOUSEBUTTONDOWN:
                 if restart_button.checkForInput(event.pos):
                     restart_button.on_pess()
-                    main_game()
+                    DISPLAYSURF.blit(restart_button.get_image(), restart_button.get_pos())
+                    pygame.display.update()
+                    pygame.time.wait(200)
+                    R.Storage_board = []
+                    R.Storage_score = []
+                    main_game(Board_game.new_board(), 0)
+                elif resume_button.checkForInput(event.pos):
+                    resume_button.on_pess()
+                    DISPLAYSURF.blit(resume_button.get_image(), resume_button.get_pos())
+                    pygame.display.update()
+                    pygame.time.wait(200)
+                    resume = R.resume_game()
+                    main_game(resume[0], resume[1])
                 elif quit_button.checkForInput(event.pos):
                     quit_button.on_pess()
+                    DISPLAYSURF.blit(quit_button.get_image(), quit_button.get_pos())
+                    pygame.display.update()
                     pygame.quit()
                     sys.exit()
             else:
                 restart_button.normal()
+                resume_button.normal()
                 quit_button.normal()
         
         DISPLAYSURF.fill(color['background'])
@@ -185,5 +201,49 @@ def setting():
         DISPLAYSURF.blit(quit_button.get_image(), quit_button.get_pos())
         pygame.display.update()
 
+def game_over(score):
+    score_text = get_font(18).render('YOUR SCORE: ' + str(score), True, color[0])
+    rect_score = score_text.get_rect(center = (225, 120))
+    
+    gameover = pygame.image.load('image/GameOver-01.png')
+    gameover = pygame.transform.rotozoom(gameover, 0, 1.2)
+    rect = gameover.get_rect()
+    rect.center = (225, 85)
+    
+    quit_button_01 = pygame.image.load('image/button/QUIT00-01.png').convert_alpha()
+    quit_button_02 = pygame.image.load('image/button/QUIT01-01.png').convert_alpha()
+    quit_button = Button(quit_button_01, quit_button_02, (150, 200), 0.6)
+    
+    new_game_01 = pygame.image.load('image/button/new_game00-01.png').convert_alpha()
+    new_game_02 = pygame.image.load('image/button/new_game01-01.png').convert_alpha()
+    new_game = Button(new_game_01, new_game_02, (300, 200), 0.6)
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == MOUSEBUTTONDOWN:
+                if new_game.checkForInput(event.pos):
+                    new_game.on_pess()
+                    DISPLAYSURF.blit(new_game.get_image(), new_game.get_pos())
+                    pygame.display.update()
+                    pygame.time.wait(200)
+                    R.Storage_board = []
+                    R.Storage_score = []
+                    main_game(Board_game.new_board(), 0)
+                elif quit_button.checkForInput(event.pos):
+                    quit_button.on_pess()
+                    DISPLAYSURF.blit(quit_button.get_image(), quit_button.get_pos())
+                    pygame.display.update()
+                    pygame.quit()
+                    sys.exit()
+        DISPLAYSURF.fill(color['background'])
+        DISPLAYSURF.blit(gameover, rect)
+        DISPLAYSURF.blit(score_text, rect_score)
+        DISPLAYSURF.blit(quit_button.get_image(), quit_button.get_pos())
+        DISPLAYSURF.blit(new_game.get_image(), new_game.get_pos())
+        pygame.display.update()
+
 if __name__ == '__main__':
-    main_game()
+    main_game(Board_game.new_board(), 0)
