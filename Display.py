@@ -6,6 +6,7 @@ import Move
 import Board_game
 import Redu as R
 from button import Button
+import sound
 
 pygame.init()
 
@@ -102,6 +103,7 @@ def main_game(Board, score):
             direction = ""
             
             if Move.Game_over(Board):
+                pygame.mixer.music.stop()
                 pygame.time.wait(500)
                 game_over(Score.new_score)
             
@@ -117,6 +119,7 @@ def main_game(Board, score):
                     DISPLAYSURF.blit(setting_button.get_image(), setting_button.get_pos())
                     pygame.display.update()
                     pygame.time.wait(200)
+                    sound.stop_music()
                     setting()
             else:
                 redu_button.normal()
@@ -171,6 +174,7 @@ def setting():
             if event.type == MOUSEBUTTONDOWN:
                 if restart_button.checkForInput(event.pos):
                     restart_button.on_pess()
+                    sound.loop_music(sound.music[0])
                     DISPLAYSURF.blit(restart_button.get_image(), restart_button.get_pos())
                     pygame.display.update()
                     pygame.time.wait(200)
@@ -179,6 +183,7 @@ def setting():
                     main_game(Board_game.new_board(), 0)
                 elif resume_button.checkForInput(event.pos):
                     resume_button.on_pess()
+                    sound.replay()
                     DISPLAYSURF.blit(resume_button.get_image(), resume_button.get_pos())
                     pygame.display.update()
                     pygame.time.wait(200)
@@ -202,9 +207,6 @@ def setting():
         pygame.display.update()
 
 def game_over(score):
-    score_text = get_font(18).render('YOUR SCORE: ' + str(score), True, color[0])
-    rect_score = score_text.get_rect(center = (225, 120))
-    
     gameover = pygame.image.load('image/GameOver-01.png')
     gameover = pygame.transform.rotozoom(gameover, 0, 1.2)
     rect = gameover.get_rect()
@@ -218,7 +220,18 @@ def game_over(score):
     new_game_02 = pygame.image.load('image/button/new_game01-01.png').convert_alpha()
     new_game = Button(new_game_01, new_game_02, (300, 200), 0.6)
     
-    while True:
+    if score <= Score.high_score:
+        score_text = get_font(18).render('YOUR SCORE: ' + str(score), True, color[0])
+        rect_score = score_text.get_rect(center = (225, 120))
+        pygame.time.wait(200)
+        sound.play_music(sound.music[2])
+    else:
+        score_text = get_font(20).render('NEW HIGH SCORE: ' + str(score), True, color[8])
+        rect_score = score_text.get_rect(center = (225, 120))
+        pygame.time.wait(200)
+        sound.play_music(sound.music[1])
+    
+    while True:        
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -231,6 +244,7 @@ def game_over(score):
                     pygame.time.wait(200)
                     R.Storage_board = []
                     R.Storage_score = []
+                    sound.loop_music(sound.music[0])
                     main_game(Board_game.new_board(), 0)
                 elif quit_button.checkForInput(event.pos):
                     quit_button.on_pess()
@@ -246,4 +260,5 @@ def game_over(score):
         pygame.display.update()
 
 if __name__ == '__main__':
+    sound.loop_music(sound.music[0])
     main_game(Board_game.new_board(), 0)

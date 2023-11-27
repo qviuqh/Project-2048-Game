@@ -22,7 +22,6 @@ def Game_over(board):
     
     if Score.new_score > Score.high_score:
         Score.update_high_score(Score.new_score)
-        print("New High Score:", Score.new_score)
     return True
 
 
