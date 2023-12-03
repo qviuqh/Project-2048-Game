@@ -1,5 +1,15 @@
 # Project-2048-Game
 
-Play in Terminal: run file "Main.py" 
+## Requirements:
+The notebooks are developed with:
+* Python 3
+* Numpy
+* Pygame
+* math
 
-Play with new window: run file "Display.py"
+## How to run game program:
+* Play in Terminal: run file "Main.py" 
+* Play with window game: run file "Display.py"
+
+## About us:
+[Information](https://docs.google.com/document/d/1XEFxEnIHIUCU5b_87ZBUtGX3b343_j-enNm2w9Vhnbk/edit)
