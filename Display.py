@@ -7,6 +7,7 @@ import Board_game
 import Redu as R
 from button import Button
 import sound
+import Congratulations as cg
 
 pygame.init()
 
@@ -101,6 +102,18 @@ def main_game(Board, score):
     while True:
         for event in pygame.event.get():
             direction = ""
+            if cg.win_game(Board):
+                for i in range(len(cg.congratulations)):
+                    index = i
+                    DISPLAYSURF.fill(color['background'])
+                    DISPLAYSURF.blit(redu_button.get_image(), redu_button.get_pos())
+                    DISPLAYSURF.blit(setting_button.get_image(), setting_button.get_pos())
+                    draw_board(Board)
+                    score_box(Score.new_score)
+                    best_score_box(Score.high_score)
+                    cg.play(DISPLAYSURF, index)
+                    pygame.display.update()
+                    pygame.time.wait(20)
             
             if Move.Game_over(Board):
                 pygame.mixer.music.stop()
